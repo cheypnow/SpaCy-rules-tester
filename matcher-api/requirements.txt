@@ -1,4 +1,5 @@
 Flask==2.1.1
+flask-cors==3.0.10
 anyio==3.6.2
 blis==0.7.9
 catalogue==2.0.8
