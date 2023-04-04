@@ -5,4 +5,9 @@ services:
     build:
       context: matcher-api
     ports:
-      - "5000:5000"
+      - "5001:5000"
+  ui:
+    build:
+      context: ui
+    ports:
+      - "3000:3000"
