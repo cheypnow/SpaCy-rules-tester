@@ -1,13 +1,13 @@
 FROM python:3.9-slim-buster
 
+RUN /usr/local/bin/python -m pip install --upgrade pip
+
 WORKDIR /app
 
-COPY . .
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port used by the Flask app
-EXPOSE 5000
+COPY . .
 
-# Start the Flask app when the container launches
 CMD ["python", "app.py"]
