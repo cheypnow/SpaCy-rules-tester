@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  matcher-api:
+    build:
+      context: matcher-api
+    ports:
+      - "5000:5000"
