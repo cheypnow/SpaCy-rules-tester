@@ -9,30 +9,31 @@ logger = logging.getLogger(__name__)
 nlp = spacy.load("en_core_web_trf")
 
 
-def match_rules(rules, text):
+def match_rules(text, rules):
     matcher = Matcher(nlp.vocab)
 
     logger.info(f"Rules: {rules}")
 
     for rule in rules:
-        if isinstance(rule, dict) and "label" in rule and "pattern" in rule:
+        if isinstance(rule, dict) and "label" in rule and "patterns" in rule:
             label = rule["label"]
-            pattern = rule["pattern"]
-            logger.info(f"Add rule {label} with patterns {pattern}")
-            matcher.add(label, pattern)
+            patterns = json.loads(rule["patterns"])
+            logger.info(f"Add rule {label} with patterns {patterns}")
+            matcher.add(label, patterns)
         else:
             logger.info(f"Invalid rule: {rule}")
 
-    # Tokenize the input text using the Spacy nlp object
     doc = nlp(text)
 
-    # Use the matcher to match the rules against the tokenized text
-    matches = matcher(doc)
+    highlights = []
+    for match_id, start, end in matcher(doc):
+        label = doc.vocab.strings[match_id]
 
-    # Collect the matched terms and return them as a list
-    matched_terms = []
-    for match_id, start, end in matches:
-        logger.info(f"Match: {matches}")
-        matched_terms.append(doc[start:end].text)
+        logger.info(f"Match {match_id}. Label: {label}. Start: {start}. End: {end}")
 
-    return matched_terms
+        highlights.append({
+            "start": start,
+            "end": end,
+            "label": doc.vocab.strings[label]
+        })
+    return {"text": text, "highlights": highlights}

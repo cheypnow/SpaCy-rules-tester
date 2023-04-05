@@ -3,6 +3,7 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from matcher import match_rules
+from highlighter import highlight_text
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -41,12 +42,11 @@ app.logger.handlers = logging.getLogger().handlers
 @app.route('/api/match', methods=['POST'])
 @cross_origin(origin='*')
 def match():
-    rules = json.loads(request.json['rules'])
-    text = request.json['text']
-
-    matched_terms = match_rules(rules, text)
-
-    return jsonify(matched_terms)
+    data = request.json
+    text = data['text']
+    result = match_rules(text, data['rules'])
+    highlighted_text = highlight_text(text, result['highlights'])
+    return jsonify({'highlights_count': len(result['highlights']), 'highlighted_text': highlighted_text})
 
 
 @app.before_request

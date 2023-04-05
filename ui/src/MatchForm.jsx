@@ -1,73 +1,97 @@
-import React, { useState } from 'react';
-import { TextField, Button, Typography } from '@material-ui/core';
+import React, {useState} from "react";
 
-function MatchForm(props) {
-    const [rules, setRules] = useState('');
-    const [text, setText] = useState('');
-    const [matchedTerms, setMatchedTerms] = useState([]);
+const MatchForm = () => {
+    const matchUrl = 'http://localhost:5001/api/match';
+    const [rules, setRules] = useState([{label: "", rule: ""}]);
+    const [text, setText] = useState("");
+    const [highlightedText, setHighlightedText] = useState("");
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-
-        const response = await fetch('http://localhost:5001/api/match', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ rules, text })
+        const ruleData = rules.map((r) => {
+            return {
+                label: r.label,
+                patterns: r.rule,
+            };
         });
 
-        const data = await response.json();
-        setMatchedTerms(data);
+        fetch(matchUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                text,
+                rules: ruleData,
+            }),
+        })
+            .then((response) => {
+                response.json().then(
+                    (data) => {
+                        setHighlightedText(data.highlighted_text)
+                    }
+                )
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
+
+    const addRule = () => {
+        const newRule = {label: "", rule: ""};
+        setRules([...rules, newRule]);
+    };
+
+    const handleRuleChange = (e, index) => {
+        const {name, value} = e.target;
+        const newRules = [...rules];
+        newRules[index][name] = value;
+        setRules(newRules);
+    };
+
+    const handleTextChange = (e) => {
+        setText(e.target.value);
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Typography variant="h6">Add rules and text to match</Typography>
-
-            <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="rules"
-                label="Rules"
-                name="rules"
-                multiline
-                rows={4}
-                value={rules}
-                onChange={(event) => setRules(event.target.value)}
-            />
-
-            <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="text"
-                label="Text"
-                name="text"
-                multiline
-                rows={4}
-                value={text}
-                onChange={(event) => setText(event.target.value)}
-            />
-
-            <Button type="submit" variant="contained" color="primary">
-                Match
-            </Button>
-
-            {matchedTerms.length > 0 && (
-                <Typography variant="body1" component="p">
-                    {matchedTerms.map((term, index) => (
-                        <span key={index} style={{ backgroundColor: '#ffcc80' }}>
-              {term}
-            </span>
+        <div>
+            <h2>Match Form</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="text">Text:</label>
+                    <textarea name="text" id="text" onChange={handleTextChange}/>
+                </div>
+                <div>
+                    <label htmlFor="rules">Rules:</label>
+                    {rules.map((rule, index) => (
+                        <div key={index}>
+                            <input
+                                type="text"
+                                placeholder="Label"
+                                name="label"
+                                value={rule.label}
+                                onChange={(e) => handleRuleChange(e, index)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Pattern"
+                                name="rule"
+                                value={rule.rule}
+                                onChange={(e) => handleRuleChange(e, index)}
+                            />
+                        </div>
                     ))}
-                </Typography>
-            )}
-        </form>
+                    <button type="button" onClick={addRule}>
+                        Add Rule
+                    </button>
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+            <div dangerouslySetInnerHTML={{__html: highlightedText}}/>
+        </div>
     );
-}
+};
 
 export default MatchForm;
