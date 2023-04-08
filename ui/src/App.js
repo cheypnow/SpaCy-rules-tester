@@ -1,5 +1,4 @@
 import MatchForm from './MatchForm';
-import './App.css'
 
 function App() {
   return (

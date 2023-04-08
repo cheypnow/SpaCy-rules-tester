@@ -1,0 +1,31 @@
+.main-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rules-form {
+  width: 50%;
+}
+
+.delete-rule-button {
+  color: red
+}
+
+.rule-label-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pattern-text {
+  width: 100%;
+}
+
+.text-input {
+  width: 100%;
+}
+
+.scapy-response-text {
+  border: solid;
+}

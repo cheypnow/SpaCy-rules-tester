@@ -1,4 +1,10 @@
 import React, {useState} from "react";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
+
+import './MatchForm.css'
 
 const MatchForm = () => {
     const matchUrl = 'http://localhost:5001/api/match';
@@ -42,6 +48,12 @@ const MatchForm = () => {
         setRules([...rules, newRule]);
     };
 
+    const deleteRule = (index) => {
+        const updatedRules = [...rules];
+        updatedRules.splice(index, 1);
+        setRules(updatedRules);
+    };
+
     const handleRuleChange = (e, index) => {
         const {name, value} = e.target;
         const newRules = [...rules];
@@ -54,42 +66,61 @@ const MatchForm = () => {
     };
 
     return (
-        <div>
-            <h2>Match Form</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="main-form">
+            <h1>SpaCy rules tester</h1>
+            <form className="rules-form" onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="text">Text:</label>
-                    <textarea name="text" id="text" onChange={handleTextChange}/>
-                </div>
-                <div>
-                    <label htmlFor="rules">Rules:</label>
+                    <h2>Rules:</h2>
                     {rules.map((rule, index) => (
-                        <div key={index}>
-                            <input
-                                type="text"
-                                placeholder="Label"
-                                name="label"
-                                value={rule.label}
-                                onChange={(e) => handleRuleChange(e, index)}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Pattern"
-                                name="rule"
-                                value={rule.rule}
-                                onChange={(e) => handleRuleChange(e, index)}
-                            />
+                        <div className="rule-and-pattern-block" key={index}>
+                            <div className="rule-label-block">
+                                <TextField
+                                    name="label"
+                                    type="text"
+                                    variant="outlined"
+                                    placeholder="Label"
+                                    value={rule.label}
+                                    onChange={(e) => handleRuleChange(e, index)}
+                                />
+                                <Button disabled={rules.length <= 1} className="delete-rule-button"
+                                        onClick={deleteRule}>
+                                    Delete
+                                </Button>
+                            </div>
+                            <div>
+                                <TextField
+                                    className="pattern-text"
+                                    name="rule"
+                                    type="text"
+                                    multiline
+                                    variant="outlined"
+                                    value={rule.rule}
+                                    onChange={(e) => handleRuleChange(e, index)}
+                                />
+                            </div>
+                            <Divider/>
                         </div>
                     ))}
-                    <button type="button" onClick={addRule}>
+                    <Button variant="outlined" type="button" onClick={addRule}>
                         Add Rule
-                    </button>
+                    </Button>
                 </div>
                 <div>
-                    <button type="submit">Submit</button>
+                    <h2>Text:</h2>
+                    <TextField
+                        className="text-input"
+                        name="text"
+                        id="text"
+                        multiline
+                        variant="outlined"
+                        onChange={handleTextChange}
+                    />
                 </div>
+                <div>
+                    <Button variant="contained" type="submit">Submit</Button>
+                </div>
+                <div className="scapy-response-text" dangerouslySetInnerHTML={{__html: highlightedText}}/>
             </form>
-            <div dangerouslySetInnerHTML={{__html: highlightedText}}/>
         </div>
     );
 };
