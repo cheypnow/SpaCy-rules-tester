@@ -13,7 +13,18 @@ const MatchForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
         const ruleData = rules.map((r) => {
+            if (!r.label.trim()) {
+                alert("Please fill in all label names");
+                return;
+            }
+
+            if (!r.rule.trim()) {
+                alert("Please fill in all rules");
+                return;
+            }
+
             return {
                 label: r.label,
                 patterns: r.rule,
