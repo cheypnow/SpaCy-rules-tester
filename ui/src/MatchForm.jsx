@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import Box from '@material-ui/core/Box';
 
 import './MatchForm.css'
 
@@ -75,6 +74,7 @@ const MatchForm = () => {
                         <div className="rule-and-pattern-block" key={index}>
                             <div className="rule-label-block">
                                 <TextField
+                                    className="label-name"
                                     name="label"
                                     type="text"
                                     variant="outlined"
@@ -105,7 +105,7 @@ const MatchForm = () => {
                         Add Rule
                     </Button>
                 </div>
-                <div>
+                <div className="text-block">
                     <h2>Text:</h2>
                     <TextField
                         className="text-input"
@@ -116,7 +116,7 @@ const MatchForm = () => {
                         onChange={handleTextChange}
                     />
                 </div>
-                <div>
+                <div className="submit-button-container">
                     <Button variant="contained" type="submit">Submit</Button>
                 </div>
                 <div className="scapy-response-text" dangerouslySetInnerHTML={{__html: highlightedText}}/>

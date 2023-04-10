@@ -16,6 +16,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
+}
+
+.rule-and-pattern-block {
+  margin-bottom: 10px;
 }
 
 .pattern-text {
@@ -24,8 +29,19 @@
 
 .text-input {
   width: 100%;
+  margin-bottom: 10px;
+}
+
+.text-block {
+  margin-bottom: 10px;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: center;
 }
 
 .scapy-response-text {
   border: solid;
+  margin-top: 10px;
 }
